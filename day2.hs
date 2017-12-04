@@ -22,3 +22,27 @@ solutionA s = solutionALists $ map (map read) $ map words (lines s)
 -- 7 5 3
 -- 2 4 6 8
 
+filterFirstMatching :: [Int] -> Int -> [Int]
+filterFirstMatching [] _     = []
+filterFirstMatching (x:xs) y
+     | x == y = xs
+     | otherwise = x : filterFirstMatching xs y
+
+listIntoPairList :: [Int] -> [(Int, [Int])]
+listIntoPairList l = map (\x -> (x, filterFirstMatching l x)) l
+
+--should be done with Maybe
+findDivisor :: (Int, [Int]) -> Int
+findDivisor (_, []) = 0
+findDivisor (x, (y:ys))
+     | x `mod` y == 0 = x `div`y
+     | otherwise = findDivisor (x, ys)
+
+listPairList ll     = map listIntoPairList ll
+listListDivisors ll = map (map findDivisor) (listPairList ll)
+
+solutionBList :: [[Int]] -> Int
+solutionBList ll =  sum $ map sum (listListDivisors ll)
+	
+solutionB :: [Char] -> Int
+solutionB s = solutionBList $ map (map read) $ map words (lines s)
